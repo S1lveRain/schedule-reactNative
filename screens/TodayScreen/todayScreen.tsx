@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
 import axios from 'axios';
+import SubjectCard from "../../components/SubjectCard/SubjectCard";
 
 const TodayScreen = () => {
     const [schedule, setSchedule] = useState(null);
@@ -16,7 +17,6 @@ const TodayScreen = () => {
                     name: 'ВИС31',
                 },
             });
-            console.log(data.result)
             setSchedule(data.result);
         } catch (error) {
             console.error('Failed to fetch schedule:', error);
@@ -44,31 +44,35 @@ const TodayScreen = () => {
         return lesson.data.lowerWeek || lesson.data.topWeek;
     };
 
-
     return (
         <View style={styles.container}>
-            <Text style={styles.dateText}>{currentDate.toDateString()}</Text>
+            <Text style={styles.dateText}>{currentDate.toLocaleString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' })}</Text>
             <Text style={styles.weekText}>
                 {currentWeek === '1' ? 'Верхняя неделя' : 'Нижняя неделя'}
             </Text>
             <ScrollView style={styles.scrollView}>
                 {schedule &&
-                    schedule.map((day, index) => {
+                    schedule.map((day, dayIndex) => {
                         if (day.dayOfWeek === String(dayOfWeek)) {
-                            return day.lessons.map((lesson, index) => {
+                            if (day.lessons.length === 0) {
+                                return (
+                                    <Image key={dayIndex} source={require('../../assets/pngegg.png')} style={styles.weekend}/>
+                                )
+                            }
+                            return day.lessons.map((lesson, lessonIndex) => {
                                 const lessonDataGroup = getWeekData(lesson);
-                                if (lessonDataGroup) {
+                                if (lessonDataGroup && lessonDataGroup.subject?.title !== undefined) {
                                     return (
-                                        <View key={index} style={styles.lessonCard}>
-                                            <Text style={styles.lessonText}>
-                                                {lessonDataGroup.subject?.title}
-                                            </Text>
-                                            <Text style={styles.lessonText}>
-                                                {lessonDataGroup.teacher?.name}
-                                            </Text>
-                                            {/* ... добавьте другие поля, как в вашем SwiftUI коде */}
-                                        </View>
-                                    );
+                                        <SubjectCard
+                                            key={lessonIndex}
+                                            teacherName={lessonDataGroup.teacher?.name}
+                                            subjectName={lessonDataGroup.subject?.title}
+                                            roomNumber={`Кабинет ${lessonDataGroup?.cabinet}`}
+                                            lectureType={lessonDataGroup.subject?.type || 'Не указано'}
+                                            startTime={lesson.time?.from}
+                                            endTime={lesson.time?.to}
+                                        />
+                                    )
                                 }
                                 return null;
                             });
@@ -84,14 +88,18 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 16,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     dateText: {
         fontSize: 18,
         marginBottom: 8,
+        textAlign: "center"
     },
     weekText: {
         fontSize: 16,
         marginBottom: 16,
+        textAlign: 'center'
     },
     scrollView: {
         flex: 1,
@@ -105,6 +113,10 @@ const styles = StyleSheet.create({
     lessonText: {
         fontSize: 14,
     },
+    weekend: {
+        width: 300,
+        height: 380
+    }
 });
 
 export default TodayScreen;
