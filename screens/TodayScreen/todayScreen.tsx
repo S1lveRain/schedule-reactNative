@@ -8,7 +8,7 @@ const TodayScreen = () => {
     const [currentWeek, setCurrentWeek] = useState(null);
 
     const currentDate = new Date();
-    const dayOfWeek = currentDate.getDay() - 3;
+    const dayOfWeek = currentDate.getDay() - 1;
 
     const fetchSchedule = async () => {
         try {
