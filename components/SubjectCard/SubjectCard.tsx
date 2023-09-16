@@ -5,7 +5,11 @@ const SubjectCard = ({ teacherName, subjectName, roomNumber, lectureType, startT
     return (
         <View style={styles.cardContainer}>
             <View style={styles.row}>
-                <Text style={styles.subjectName}>{subjectName}</Text>
+                <View style={{ flex: 1 }}>
+                    <Text style={styles.subjectName} numberOfLines={2} ellipsizeMode="tail">
+                        {subjectName}
+                    </Text>
+                </View>
                 <Text style={styles.time}>{`${startTime} - ${endTime}`}</Text>
             </View>
             <View style={styles.row}>

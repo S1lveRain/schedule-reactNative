@@ -8,7 +8,7 @@ const TodayScreen = () => {
     const [currentWeek, setCurrentWeek] = useState(null);
 
     const currentDate = new Date();
-    const dayOfWeek = currentDate.getDay() - 1;
+    const dayOfWeek = currentDate.getDay() - 3;
 
     const fetchSchedule = async () => {
         try {
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 16,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     dateText: {
         fontSize: 18,
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     },
     weekend: {
         width: 300,
-        height: 380
+        height: 380,
     }
 });
 
